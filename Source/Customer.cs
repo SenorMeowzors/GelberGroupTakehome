@@ -1,6 +1,8 @@
-﻿namespace TakeHome.Source
+﻿using System.Reflection.Metadata.Ecma335;
+
+namespace TakeHome.Source
 {
-    public struct Customer
+    public class Customer
     {
         public enum CustomerType
         {
@@ -8,31 +10,34 @@
             BoardLessThanHalfFull
         }
 
-        public CustomerType customerType;
+        public virtual CustomerType customerType
+        {
+            get
+            {
+                return CustomerType.BoardAnyTrain;
+            }
+        }
         public int timeArrived;
         public int destinationStation;
         public int startingStation;
+        public int customerID;
 
+        public BoardingStrategy boardingStrategy;
+        
         public override string ToString()
         {
-            return $"Customer Type: {customerType}\n" +
+            return 
+                $"ID: {customerID}\n" +
+                $"Customer Type: {customerType}\n" +
                 $"Time Arrived: {timeArrived}\n" +
                 $"Destination: {destinationStation}\n" +
                 $"Starting Station: {startingStation}\n";
         }
 
-        public static CustomerType ParseCustomer(char type)
+        public void BoardTrain(Train train)
         {
-            switch (type)
-            {
-                case 'A':
-                    return CustomerType.BoardAnyTrain;
-                case 'B':
-                    return CustomerType.BoardLessThanHalfFull;
-                default:
-                    throw new Exception(); //TOOD CHANGE
-                    return CustomerType.BoardAnyTrain;
-            }
+            boardingStrategy.Board(train);
         }
     }
+
 }

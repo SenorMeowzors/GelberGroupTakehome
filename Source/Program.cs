@@ -1,64 +1,105 @@
-﻿namespace TakeHome.Source
+﻿using static TakeHome.Source.Customer;
+
+namespace TakeHome.Source
 {
     internal class Program
     {
-        public static void ReadInput(string fileName)
+        public static CustomerType ParseCustomer(char type)
+        {
+            switch (type)
+            {
+                case 'A':
+                    return CustomerType.BoardAnyTrain;
+                case 'B':
+                    return CustomerType.BoardLessThanHalfFull;
+                default:
+                    throw new Exception(); //TOOD CHANGE
+                    return CustomerType.BoardAnyTrain;
+            }
+        }
+        public static TrainSimulation SetupSimulation(string fileName)
         {
             if (!File.Exists(fileName))
             {
                 Console.WriteLine($"File {fileName} does not exist!");
-                return;
+                return null;
             }
 
             using (StreamReader reader = new StreamReader(fileName))
             {
-                string line;
+                string trainHeader = reader.ReadLine();
+                TrainSchedule trainSchedule = ReadTrainSchedule(trainHeader);
 
-                string[] trainData = reader.ReadLine().Split(' ');
+                List<Customer> customerList = PopulateCustomers(reader);
 
-                if (trainData.Length != 4)
-                {
-                    Console.WriteLine("Train data length unexpected: " + trainData.Length);
-                }
-
-                TrainSchedule trainSchedule = new TrainSchedule
-                {
-                    numberofStations = int.Parse(trainData[0]),
-                    stationDistance = int.Parse(trainData[1]),
-                    departFrequency = int.Parse(trainData[2]),
-                    capacity = int.Parse(trainData[3])
-                };
-
-                Console.WriteLine($"Train Data: {trainSchedule.ToString()}");
-
-                List<Customer> customerList = new List<Customer>();
-
-                while ((line = reader.ReadLine()) != null)
-                {
-
-                    string[]? data = line.Split(' ');
-
-                    if (data.Length < 1)
-                    {
-                        return;
-                    }
-
-                    Customer.CustomerType customerType = Customer.ParseCustomer(Convert.ToChar(data[0]));
-
-                    Customer customer = new Customer
-                    {
-                        customerType = customerType,
-                        timeArrived = int.Parse(data[1]),
-                        destinationStation = int.Parse(data[2]),
-                        startingStation = int.Parse(data[3])
-                    };
-
-                    customerList.Add(customer);
-                    Console.WriteLine($"Customer Data: {customer}");
-                }
+                return new TrainSimulation(customerList, trainSchedule);
             }
+
         }
 
+        private static List<Customer> PopulateCustomers(StreamReader reader)
+        {
+            List<Customer> customerList = new List<Customer>();
+
+            int customerID = 1;
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                string[]? data = line.Split(' ');
+
+                if (data.Length < 1)
+                {
+                    break;
+                }
+
+                CustomerType customerType = ParseCustomer(Convert.ToChar(data[0]));
+                BoardingStrategy strategy = null;
+                if (customerType == CustomerType.BoardAnyTrain)
+                {
+                    strategy = new BoardWhenPossible();
+                }
+                else
+                {
+                    strategy = new BoardWhenLessThanHalfFull();
+                }
+
+                Customer customer = new Customer
+                {
+                    customerID = customerID,
+                    boardingStrategy = strategy,
+                    timeArrived = int.Parse(data[1]),
+                    destinationStation = int.Parse(data[2]),
+                    startingStation = int.Parse(data[3])
+                };
+
+                customerList.Add(customer);
+                customerID++;
+                Console.WriteLine($"Customer Data: {customer}");
+            }
+
+            return customerList;
+        }
+
+        private static TrainSchedule ReadTrainSchedule(string trainHeader)
+        {
+            string[] trainData = trainHeader.Split(' ');
+
+            if (trainData.Length != 4)
+            {
+                Console.WriteLine("Train data length unexpected: " + trainData.Length);
+            }
+
+            TrainSchedule trainSchedule = new TrainSchedule
+            {
+                numberofStations = int.Parse(trainData[0]),
+                stationDistance = int.Parse(trainData[1]),
+                departFrequency = int.Parse(trainData[2]),
+                capacity = int.Parse(trainData[3])
+            };
+
+            Console.WriteLine($"Train Data: {trainSchedule.ToString()}");
+            return trainSchedule;
+        }
 
         static void Main(string[] args)
         {
@@ -73,9 +114,16 @@
                     break;
                 }
 
-                ReadInput(fileName);
-            }
+                TrainSimulation simulation = SetupSimulation(fileName);
 
+                if(simulation != null)
+                {
+                    while(simulation.Tick())
+                    {
+                        Console.WriteLine(simulation.time);
+                    }
+                }
+            }
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
