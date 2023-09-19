@@ -63,14 +63,14 @@ namespace TakeHome.Source
                     strategy = new BoardWhenLessThanHalfFull();
                 }
 
-                Customer customer = new Customer
-                {
-                    customerID = customerID,
-                    boardingStrategy = strategy,
-                    timeArrived = int.Parse(data[1]),
-                    destinationStation = int.Parse(data[2]),
-                    startingStation = int.Parse(data[3])
-                };
+                Customer customer = new Customer();
+                strategy.Customer = customer;
+
+                customer.customerID = customerID;
+                customer.boardingStrategy = strategy;
+                customer.timeArrived = int.Parse(data[1]);
+                customer.destinationStation = int.Parse(data[2]);
+                customer.startingStation = int.Parse(data[3]);
 
                 customerList.Add(customer);
                 customerID++;
@@ -118,9 +118,10 @@ namespace TakeHome.Source
 
                 if(simulation != null)
                 {
-                    while(simulation.Tick())
+                    while(!simulation.Tick())
                     {
-                        Console.WriteLine(simulation.time);
+                        Console.ReadKey();
+
                     }
                 }
             }
