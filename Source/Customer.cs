@@ -10,11 +10,18 @@ namespace TakeHome.Source
             BoardLessThanHalfFull
         }
 
-        public virtual CustomerType customerType
+        public CustomerType customerType
         {
             get
             {
-                return CustomerType.BoardAnyTrain;
+                if(boardingStrategy is BoardWhenPossible)
+                {
+                    return CustomerType.BoardAnyTrain;
+                }
+                else
+                {
+                    return CustomerType.BoardLessThanHalfFull;
+                }
             }
         }
         public int timeArrived;

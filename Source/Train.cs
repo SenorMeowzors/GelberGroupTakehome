@@ -55,7 +55,6 @@
             Debug.Log($"{TrainName} Spawns at {currentStation.Value.stationNumber}");
 
         }
-
         public void Tick(List<Customer> customers)
         {
             if(distanceToNextStation == trainSimulation.trainSchedule.stationDistance)
@@ -118,6 +117,8 @@
                 int e = 0;
                 e++;
             }
+
+            customers = customers.OrderByDescending(c => c.boardingStrategy.Priority).ThenByDescending(c => Math.Abs(currentStation.Value.stationNumber - c.destinationStation)).ToList();    
             for (int i = 0; i < customers.Count; i++)
             {
                 Customer c = customers[i];

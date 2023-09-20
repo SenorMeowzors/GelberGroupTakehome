@@ -64,7 +64,7 @@ namespace TakeHome.Source
                     
                     node.customers.Add(c);
 
-                    Debug.Log($"Customer {c.customerID} arrives at {node.stationNumber}");
+                    Debug.Log($"Customer {c.customerID} arrives at {node.stationNumber}. They want to goto {c.destinationStation}");
                 }
             }
         }

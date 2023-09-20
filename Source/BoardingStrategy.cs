@@ -5,6 +5,7 @@
         public Customer Customer { get; set; }
         public abstract void Board(Train train);
 
+        public abstract int Priority { get; }
     }
 
 }
