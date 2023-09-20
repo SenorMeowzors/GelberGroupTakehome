@@ -5,58 +5,21 @@ namespace TakeHome.Source
 {
     class Program
     {
-        public static TrainSimulation SetupSimulation(string fileName)
-        {
-            var path = fileName;
-            if (!File.Exists(path))
-            {
-                Debug.Log($"{path} does not exist!", true);
-                return null;
-            }
-
-            return Parser.TrainSimulationFromFile(path);
-
-        }
-
-
+        static bool _stepped = false;
+        static string _fileName;
+        static List<string> _filesToRun = new List<string>();
 
         static void Main(string[] args)
         {
-            bool stepped = false;
-            string fileName;
-
             while (true)
-            {          
-                List<string> filesToRun  = new List<string>();
+            {
+                InitializeParameters(args);
 
-                if (args.Length > 0)
+                if (_filesToRun.Count > 0)
                 {
-                    foreach (string arg in args)
+                    foreach (string file in _filesToRun)
                     {
-                        if (arg == "-simple")
-                        {
-                            Debug.Simple = true;
-                            continue;
-                        }
-
-                        if(arg == "-steps")
-                        {
-                            stepped = true;
-                        }
-
-                        if (Path.Exists(arg))
-                        {
-                            filesToRun.Add(arg);
-                            continue;
-                        }
-                    }
-                }
-
-                if (filesToRun.Count > 0)
-                {
-                    foreach(string file in filesToRun)
-                    {
-                        Simulate(Path.GetRelativePath(Environment.CurrentDirectory, file), stepped);
+                        Simulate(Path.GetRelativePath(Environment.CurrentDirectory, file), _stepped);
                     }
 
                 }
@@ -64,30 +27,56 @@ namespace TakeHome.Source
                 {
                     Debug.Log("Input the filepath of a file (with extension) you wish to simulate and press enter. Type quit to exit.", true);
 
-                    fileName = Console.ReadLine();
-                    if (fileName == null || fileName.Length < 1)
+                    _fileName = Console.ReadLine();
+                    if (_fileName == null || _fileName.Length < 1)
                     {
                         continue;
                     }
 
-                    if (fileName.ToLower() == "quit")
+                    if (_fileName.ToLower() == "quit")
                     {
                         break;
                     }
 
-                    Simulate(fileName);
+                    Simulate(_fileName);
                 }
 
-                if(args.Length > 0)
+                if (args.Length > 0)
                 {
                     break;
                 }
             }
 
-            if(stepped)
+            if (_stepped)
             {
                 Debug.Log("Press any key to continue...");
                 Console.ReadKey();
+            }
+        }
+
+        private static void InitializeParameters(string[] args)
+        {
+            if (args.Length > 0)
+            {
+                foreach (string arg in args)
+                {
+                    if (arg == "-simple")
+                    {
+                        Debug.Simple = true;
+                        continue;
+                    }
+
+                    if (arg == "-steps")
+                    {
+                        _stepped = true;
+                    }
+
+                    if (Path.Exists(arg))
+                    {
+                        _filesToRun.Add(arg);
+                        continue;
+                    }
+                }
             }
         }
 
@@ -113,6 +102,19 @@ namespace TakeHome.Source
             Debug.LogBlank();
             Debug.LogHeader("Simulation Ended");
             Debug.LogBlank();
+        }
+
+        private static TrainSimulation SetupSimulation(string fileName)
+        {
+            var path = fileName;
+            if (!File.Exists(path))
+            {
+                Debug.Log($"{path} does not exist!", true);
+                return null;
+            }
+
+            return Parser.TrainSimulationFromFile(path);
+
         }
     }
 }
