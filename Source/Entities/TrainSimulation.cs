@@ -8,12 +8,19 @@ namespace TakeHome.Source.Entities
         List<Customer> _customers;
         public TrainSchedule trainSchedule;
 
-        List<Train> trains = new List<Train>();
+        List<Train> _trains = new List<Train>();
+        List<Train> _trainsToRemove = new List<Train>();
+
         public LinkedList<Station> stations = new LinkedList<Station>();
 
         public int time = 0;
-        int numTrains = 0;
-        public int Arrivals;
+        int _numTrains = 0;
+        int _totalArrivals;
+
+        public void OnCustomerArrived(Customer customer)
+        {
+            _totalArrivals++;
+        }
 
         public TrainSimulation(List<Customer> customersList, TrainSchedule schedule)
         {
@@ -43,15 +50,25 @@ namespace TakeHome.Source.Entities
             MoveTrains();
 
 
-            if (Arrivals == _customers.Count)
+            if (_totalArrivals == _customers.Count)
             {
                 Debug.Log($"All customers arrived. Finished in t = {time} minutes");
                 Debug.Log("");
                 return true;
             }
 
+            RemoveTrains();
+
             time++;
             return false;
+        }
+
+        private void RemoveTrains()
+        {
+            foreach(var t in _trainsToRemove)
+            {
+                _trains.Remove(t);
+            }
         }
 
         private void SpawnCustomers()
@@ -73,11 +90,14 @@ namespace TakeHome.Source.Entities
 
         void MoveTrains()
         {
-            for (int i = 0; i < trains.Count; i++)
+            for (int i = 0; i < _trains.Count; i++)
             {
-                var t = trains[i];
+                var t = _trains[i];
+                if(t != null)
+                {
+                    t.Tick(_customers);
 
-                t.Tick(_customers);
+                }
             }
         }
 
@@ -87,17 +107,16 @@ namespace TakeHome.Source.Entities
             {
                 return;
             }
-            trains.Add(new Train(this, true, ++numTrains));
-            trains.Add(new Train(this, false, ++numTrains));
+            Train forwardTrain = new Train(this, true, ++_numTrains);
+            Train backwardsTrain = new Train(this, false, ++_numTrains);
+
+            _trains.Add(forwardTrain);
+            _trains.Add(backwardsTrain);
         }
 
-        public void RemoveTrain(Train train)
+        public void QueueTrainRemoval(Train train)
         {
-            if (trains.Contains(train))
-            {
-                //Debug.Log($"{train.TrainName} despawned");
-                trains.Remove(train);
-            }
+            _trainsToRemove.Add(train);
         }
     }
 }

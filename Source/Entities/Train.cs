@@ -57,6 +57,10 @@
         }
         public void Tick(List<Customer> customers)
         {
+            if(trainID == 5)
+            {
+                int test = 32;
+            }
             if (distanceToNextStation == trainSimulation.trainSchedule.stationDistance)
             {
                 currentStation.Value.MoveCustomers(this);
@@ -80,7 +84,7 @@
 
             if (currentStation == null)
             {
-                trainSimulation.RemoveTrain(this);
+                trainSimulation.QueueTrainRemoval(this);
                 return;
             }
 
@@ -141,7 +145,7 @@
                     currentStation.Value.customers.Add(c);
                     Debug.Log($"Train {TrainName} arrives at {currentStation.Value.stationNumber} Passenger #{c.customerID} departs this train.");
 
-                    trainSimulation.Arrivals++;
+                    trainSimulation.OnCustomerArrived(c);
                 }
             }
         }
