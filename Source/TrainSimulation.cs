@@ -11,6 +11,8 @@ namespace TakeHome.Source
 
         public int time = 0;
         int numTrains = 0;
+        public int Arrivals;
+
         public TrainSimulation(List<Customer> customersList, TrainSchedule schedule)
         {
             _customers = customersList;
@@ -19,12 +21,14 @@ namespace TakeHome.Source
             int stationNum = 1;
             Station headStation = new Station(stationNum);
             LinkedListNode<Station> firstStation = stations.AddFirst(headStation);
-            for(int i =0 ; i < trainSchedule.numberofStations-1; i++)
+
+            LinkedListNode<Station> lastestNode = firstStation;
+            for (int i = stationNum; i < trainSchedule.numberofStations; i++)
             {
                 stationNum++;
                 Station station = new Station(stationNum);
 
-                stations.AddAfter(firstStation, station);
+                lastestNode = stations.AddAfter(lastestNode, station);
             }
         }
 
@@ -37,13 +41,14 @@ namespace TakeHome.Source
             MoveTrains();
 
 
-            time++;
-            if (trains.All(e => e.Finished))
+            if (Arrivals == _customers.Count)
             {
-                Console.WriteLine($"Finished in t = " + time);
+                Console.WriteLine($"All customers arrived. Finished in t = {time} minutes");
+                Console.WriteLine();
                 return true;
             }
 
+            time++;
             return false;
         }
 
@@ -59,7 +64,7 @@ namespace TakeHome.Source
                     
                     node.customers.Add(c);
 
-                    Console.WriteLine($"Customer {c.customerID} arrived at {node.stationNumber}");
+                    Console.WriteLine($"Customer {c.customerID} arrives at {node.stationNumber}");
                 }
             }
         }

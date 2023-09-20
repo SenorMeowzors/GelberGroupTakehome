@@ -43,6 +43,8 @@ namespace TakeHome.Source
 
             int customerID = 1;
             string line;
+            Console.WriteLine($"##############  Customers  ##############");
+
             while ((line = reader.ReadLine()) != null)
             {
                 string[]? data = line.Split(' ');
@@ -74,7 +76,7 @@ namespace TakeHome.Source
 
                 customerList.Add(customer);
                 customerID++;
-                Console.WriteLine($"Customer Data: {customer}");
+                Console.WriteLine($"{customer}");
             }
 
             return customerList;
@@ -96,8 +98,9 @@ namespace TakeHome.Source
                 departFrequency = int.Parse(trainData[2]),
                 capacity = int.Parse(trainData[3])
             };
+            Console.WriteLine($"##############  Train Data  ##############");
 
-            Console.WriteLine($"Train Data: {trainSchedule.ToString()}");
+            Console.WriteLine(trainSchedule);
             return trainSchedule;
         }
 
