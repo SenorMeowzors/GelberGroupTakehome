@@ -7,13 +7,14 @@ namespace TakeHome.Source
     {
         public static TrainSimulation SetupSimulation(string fileName)
         {
-            if (!File.Exists(fileName))
+            var path = fileName;
+            if (!File.Exists(path))
             {
-                Debug.Log($"File {fileName} does not exist!");
+                Debug.Log($"{path} does not exist!");
                 return null;
             }
 
-            return Parser.TrainSimulationFromFile(fileName);
+            return Parser.TrainSimulationFromFile(path);
 
         }
 
@@ -21,41 +22,67 @@ namespace TakeHome.Source
         {
             while (true)
             {
-                Debug.Log("Place a .txt file at .exe path and enter the file name and press enter. Type quit to exit.");
+                string fileName;
 
-                string fileName = Console.ReadLine();
-
-                if (fileName == null || fileName.Length < 1)
+                if (args.Length > 0)
                 {
-                    continue;
+                    foreach(string arg in args)
+                    {
+                        Simulate(false, Path.GetRelativePath(Environment.CurrentDirectory, arg));
+                    }
+
+                }
+                else
+                {
+                    Debug.Log("Input the filepath of a file you wish to simulate and press enter. Type quit to exit.");
+
+                    fileName = Console.ReadLine();
+                    if (fileName == null || fileName.Length < 1)
+                    {
+                        continue;
+                    }
+
+                    if (fileName.ToLower() == "quit")
+                    {
+                        break;
+                    }
+
+                    Simulate(true, fileName);
                 }
 
-                if(fileName.ToLower() == "quit")
+                if(args.Length > 0)
                 {
                     break;
                 }
+            }
 
+                Debug.Log("Press any key to continue...");
+                Console.ReadKey();
 
-                Debug.LogBlank();
-                Debug.LogHeader("Simulation Begin");
-                Debug.LogBlank();
+        }
 
-                TrainSimulation simulation = SetupSimulation(fileName);
+        private static void Simulate(bool steppedSimulation, string fileName)
+        {
+            Debug.LogBlank();
+            Debug.LogHeader("Simulation Begin");
+            Debug.LogBlank();
 
-                if(simulation != null)
+            TrainSimulation simulation = SetupSimulation(fileName);
+
+            if (simulation != null)
+            {
+                while (!simulation.Tick())
                 {
-                    while(!simulation.Tick())
+                    if (steppedSimulation)
                     {
                         Console.ReadKey();
                     }
                 }
-
-                Debug.LogBlank();
-                Debug.LogHeader("Simulation Ended");
-                Debug.LogBlank();
-
             }
 
+            Debug.LogBlank();
+            Debug.LogHeader("Simulation Ended");
+            Debug.LogBlank();
         }
     }
 }

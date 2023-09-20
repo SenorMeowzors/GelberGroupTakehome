@@ -17,6 +17,7 @@ namespace TakeHome.Source
                 case 'B':
                     return PassengerType.BoardLessThanHalfFull;
                 default:
+                    Debug.Log($"Invalid Passenger Type: {type}");
                     throw new NotImplementedException();
             }
         }
@@ -26,10 +27,17 @@ namespace TakeHome.Source
             using (StreamReader reader = new StreamReader(fileName))
             {
                 string trainHeader = reader.ReadLine();
-                TrainSchedule trainSchedule = ParseTrainSchedule(trainHeader);
-                List<Passenger> initialPassengers = PopulatePassengers(reader);
-
-                return new TrainSimulation(initialPassengers, trainSchedule);
+                try
+                {
+                    TrainSchedule trainSchedule = ParseTrainSchedule(trainHeader);
+                    List<Passenger> initialPassengers = PopulatePassengers(reader);
+                    return new TrainSimulation(initialPassengers, trainSchedule);
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log($"Failed to read file: {fileName}");
+                    return null;
+                }
             }
         }
 
