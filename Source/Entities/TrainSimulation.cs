@@ -92,7 +92,7 @@ namespace TakeHome.Source.Entities
 
                     node.Passengers.Add(c);
 
-                    Debug.Log($"Passenger #{c.ID} arrives at {node.StationNumber}. They want to goto Station {c.DestinationStation}.");
+                    Debug.Log($"Passenger #{c.ID} arrives at Station {node.StationNumber}. They want to goto Station {c.DestinationStation}.");
                 }
             }
         }

@@ -21,14 +21,20 @@ namespace TakeHome.Source
         {
             while (true)
             {
-                Debug.Log("Place a .txt file at .exe path and enter the file name and press enter. Leave blank to exit.");
+                Debug.Log("Place a .txt file at .exe path and enter the file name and press enter. Type quit to exit.");
 
                 string fileName = Console.ReadLine();
 
                 if (fileName == null || fileName.Length < 1)
                 {
+                    continue;
+                }
+
+                if(fileName.ToLower() == "quit")
+                {
                     break;
                 }
+
 
                 Debug.LogBlank();
                 Debug.LogHeader("Simulation Begin");
@@ -50,8 +56,6 @@ namespace TakeHome.Source
 
             }
 
-            Debug.Log("Press any key to exit...");
-            Console.ReadKey();
         }
     }
 }

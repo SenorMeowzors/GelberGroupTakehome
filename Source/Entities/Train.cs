@@ -111,7 +111,7 @@ namespace TakeHome.Source.Entities
                     CurrentPassengers.RemoveAt(i);
                     CurrentStation.Value.Passengers.Add(c);
 
-                    Debug.Log($"{TrainName} arrives at {CurrentStation.Value.StationNumber}. Passenger #{c.ID} departs this train.");
+                    Debug.Log($"{TrainName} arrives at Station {CurrentStation.Value.StationNumber}. Passenger #{c.ID} departs this train.");
 
                     trainSimulation.OnPassengerArrived(c);
                 }
