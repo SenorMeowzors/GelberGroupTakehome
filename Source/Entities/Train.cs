@@ -12,9 +12,9 @@ namespace TakeHome.Source.Entities
         public int DepartFrequency { get; private set; }
         public int ID { get; private set; }
 
-        int _distanceToNextStation;
+        private int _distanceToNextStation;
 
-        TrainSimulation trainSimulation;
+        private TrainSimulation trainSimulation;
 
         public string TrainName
         {
@@ -67,25 +67,6 @@ namespace TakeHome.Source.Entities
             AdvanceTrain();
         }
 
-        public bool IsGoingTowardsDestination(Passenger passenger)
-        {
-            int destination = passenger.DestinationStation;
-
-            if (CurrentStation.Value.StationNumber == destination)
-            {
-                return false;
-            }
-
-            if (Forward)
-            {
-                return CurrentStation.Value.StationNumber < destination;
-            }
-            else
-            {
-                return CurrentStation.Value.StationNumber > destination;
-            }
-        }
-
         public void EmbarkPassengers(List<Passenger> passengers)
         {
             passengers = PrioritizeByStrategyAndDistance(passengers);
@@ -129,6 +110,25 @@ namespace TakeHome.Source.Entities
 
             CurrentStation.Value.Passengers.Remove(passenger);
             CurrentPassengers.Add(passenger);
+        }
+
+        private bool IsGoingTowardsDestination(Passenger passenger)
+        {
+            int destination = passenger.DestinationStation;
+
+            if (CurrentStation.Value.StationNumber == destination)
+            {
+                return false;
+            }
+
+            if (Forward)
+            {
+                return CurrentStation.Value.StationNumber < destination;
+            }
+            else
+            {
+                return CurrentStation.Value.StationNumber > destination;
+            }
         }
 
         private void AdvanceTrain()

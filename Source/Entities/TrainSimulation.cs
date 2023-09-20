@@ -5,12 +5,12 @@ namespace TakeHome.Source.Entities
 {
     public class TrainSimulation
     {
-        List<Passenger> _passengers;
-        List<Train> _trains;
-        List<Train> _trainsToRemove;
+        private List<Passenger> _passengers;
+        private List<Train> _trains;
+        private List<Train> _trainsToRemove;
 
-        int _numTrains = 0;
-        int _totalArrivals;
+        private int _numTrains = 0;
+        private int _totalArrivals;
 
         public int Time { get; set; }
         public TrainSchedule TrainSchedule { get; set; }
@@ -31,22 +31,6 @@ namespace TakeHome.Source.Entities
             _trainsToRemove = new List<Train>();
 
             CreateStations();
-        }
-
-        private void CreateStations()
-        {
-            int stationNum = 1;
-            Station headStation = new Station(stationNum);
-            LinkedListNode<Station> firstStation = Stations.AddFirst(headStation);
-
-            LinkedListNode<Station> lastestNode = firstStation;
-            for (int i = stationNum; i < TrainSchedule.NumberofStations; i++)
-            {
-                stationNum++;
-                Station station = new Station(stationNum);
-
-                lastestNode = Stations.AddAfter(lastestNode, station);
-            }
         }
 
         public bool Tick()
@@ -79,6 +63,28 @@ namespace TakeHome.Source.Entities
             return false;
         }
 
+        public void QueueTrainRemoval(Train train)
+        {
+            _trainsToRemove.Add(train);
+        }
+
+
+        private void CreateStations()
+        {
+            int stationNum = 1;
+            Station headStation = new Station(stationNum);
+            LinkedListNode<Station> firstStation = Stations.AddFirst(headStation);
+
+            LinkedListNode<Station> lastestNode = firstStation;
+            for (int i = stationNum; i < TrainSchedule.NumberofStations; i++)
+            {
+                stationNum++;
+                Station station = new Station(stationNum);
+
+                lastestNode = Stations.AddAfter(lastestNode, station);
+            }
+        }
+
         private void RemoveTrains()
         {
             foreach(var t in _trainsToRemove)
@@ -104,7 +110,7 @@ namespace TakeHome.Source.Entities
             }
         }
 
-        void MoveTrains()
+        private void MoveTrains()
         {
             for (int i = 0; i < _trains.Count; i++)
             {
@@ -128,11 +134,6 @@ namespace TakeHome.Source.Entities
 
             _trains.Add(forwardTrain);
             _trains.Add(backwardsTrain);
-        }
-
-        public void QueueTrainRemoval(Train train)
-        {
-            _trainsToRemove.Add(train);
         }
     }
 }

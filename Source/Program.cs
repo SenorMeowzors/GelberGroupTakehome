@@ -5,9 +5,9 @@ namespace TakeHome.Source
 {
     class Program
     {
-        static bool _stepped = false;
-        static string _fileName;
-        static List<string> _filesToRun = new List<string>();
+        private static bool _stepped = false;
+        private static string _fileName;
+        private static List<string> _filesToRun = new List<string>();
 
         static void Main(string[] args)
         {
