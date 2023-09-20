@@ -34,7 +34,7 @@ namespace TakeHome.Source
 
         public bool Tick()
         {
-            Console.WriteLine($"##############  t={time}  ##############");
+            Debug.Log($"##############  t={time}  ##############");
 
             SpawnCustomers();
             SpawnTrains();
@@ -43,8 +43,8 @@ namespace TakeHome.Source
 
             if (Arrivals == _customers.Count)
             {
-                Console.WriteLine($"All customers arrived. Finished in t = {time} minutes");
-                Console.WriteLine();
+                Debug.Log($"All customers arrived. Finished in t = {time} minutes");
+                Debug.Log("");
                 return true;
             }
 
@@ -64,7 +64,7 @@ namespace TakeHome.Source
                     
                     node.customers.Add(c);
 
-                    Console.WriteLine($"Customer {c.customerID} arrives at {node.stationNumber}");
+                    Debug.Log($"Customer {c.customerID} arrives at {node.stationNumber}");
                 }
             }
         }
@@ -93,7 +93,7 @@ namespace TakeHome.Source
         {
             if(trains.Contains(train))
             {
-                //Console.WriteLine($"{train.TrainName} despawned");
+                //Debug.Log($"{train.TrainName} despawned");
                 trains.Remove(train);
             }
         }

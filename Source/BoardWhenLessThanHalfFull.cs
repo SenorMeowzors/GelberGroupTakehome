@@ -8,7 +8,7 @@
             {
                 return;
             }
-            Console.WriteLine($"{Customer.customerID} + boards the {train.TrainName}");
+            Debug.Log($"{Customer.customerID} + boards the {train.TrainName}");
             train.BoardCustomer(this.Customer);
         }
     }

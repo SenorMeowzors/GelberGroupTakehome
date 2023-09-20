@@ -7,8 +7,9 @@
         public bool _forward;
         public int capacity;
         public int departFrequency;
-        public int trainSpeed = 1;
         public int trainID;
+
+        public int distanceToNextStation;
         public string TrainName
         {
             get
@@ -46,18 +47,29 @@
             {
                 currentStation = simulation.stations.Last;
             }
+
+            trainSimulation = simulation;
             capacity = simulation.trainSchedule.capacity;
             departFrequency  = simulation.trainSchedule.departFrequency;
-            trainSimulation = simulation;
-
-            Console.WriteLine($"{TrainName} Spawns at {currentStation.Value.stationNumber}");
+            distanceToNextStation = simulation.trainSchedule.stationDistance;
+            Debug.Log($"{TrainName} Spawns at {currentStation.Value.stationNumber}");
 
         }
 
         public void Tick(List<Customer> customers)
         {
+            if(distanceToNextStation == trainSimulation.trainSchedule.stationDistance)
+            {
+                currentStation.Value.MoveCustomers(this);
+            }
 
-            currentStation.Value.MoveCustomers(this);
+            distanceToNextStation--;
+            if(distanceToNextStation > 0)
+            {
+                Debug.LogWarning($"{TrainName} has {distanceToNextStation} left to goto next station");
+                return;
+            }
+
             if (_forward)
             {
                 currentStation = currentStation.Next;
@@ -73,7 +85,8 @@
                 return;
             }
 
-            //Console.WriteLine($"{TrainName} moved to {currentStation.Value.stationNumber}");
+            distanceToNextStation = trainSimulation.trainSchedule.stationDistance;
+            Debug.Log($"{TrainName} just moved to {currentStation.Value.stationNumber}");
 
         }
 
@@ -125,7 +138,7 @@
                 {
                     currentCustomers.RemoveAt(i);
                     currentStation.Value.customers.Add(c);
-                    Console.WriteLine($"Train {TrainName} arrives at {currentStation.Value.stationNumber} Passenger #{c.customerID} departs this train.");
+                    Debug.Log($"Train {TrainName} arrives at {currentStation.Value.stationNumber} Passenger #{c.customerID} departs this train.");
 
                     trainSimulation.Arrivals++;
                 }
@@ -138,7 +151,7 @@
             {
                 return;
             }
-            Console.WriteLine($"Train {TrainName} arrives at station {currentStation.Value.stationNumber} Passenger #{customer.customerID} boards this train.");
+            Debug.Log($"Train {TrainName} arrives at station {currentStation.Value.stationNumber} Passenger #{customer.customerID} boards this train.");
 
             currentStation.Value.customers.Remove(customer);
             currentCustomers.Add(customer);

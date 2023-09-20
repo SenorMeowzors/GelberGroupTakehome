@@ -21,7 +21,7 @@ namespace TakeHome.Source
         {
             if (!File.Exists(fileName))
             {
-                Console.WriteLine($"File {fileName} does not exist!");
+                Debug.Log($"File {fileName} does not exist!");
                 return null;
             }
 
@@ -43,7 +43,7 @@ namespace TakeHome.Source
 
             int customerID = 1;
             string line;
-            Console.WriteLine($"##############  Customers  ##############");
+            Debug.Log($"##############  Customers  ##############");
 
             while ((line = reader.ReadLine()) != null)
             {
@@ -76,7 +76,7 @@ namespace TakeHome.Source
 
                 customerList.Add(customer);
                 customerID++;
-                Console.WriteLine($"{customer}");
+                Debug.Log($"{customer}");
             }
 
             return customerList;
@@ -88,7 +88,7 @@ namespace TakeHome.Source
 
             if (trainData.Length != 4)
             {
-                Console.WriteLine("Train data length unexpected: " + trainData.Length);
+                Debug.Log("Train data length unexpected: " + trainData.Length);
             }
 
             TrainSchedule trainSchedule = new TrainSchedule
@@ -98,9 +98,9 @@ namespace TakeHome.Source
                 departFrequency = int.Parse(trainData[2]),
                 capacity = int.Parse(trainData[3])
             };
-            Console.WriteLine($"##############  Train Data  ##############");
+            Debug.Log($"##############  Train Data  ##############");
 
-            Console.WriteLine(trainSchedule);
+            Debug.Log(trainSchedule);
             return trainSchedule;
         }
 
@@ -108,7 +108,7 @@ namespace TakeHome.Source
         {
             while (true)
             {
-                Console.WriteLine("Place a .txt file at .exe path and enter the file name and press enter. Leave blank to exit");
+                Debug.Log("Place a .txt file at .exe path and enter the file name and press enter. Leave blank to exit");
 
                 string fileName = Console.ReadLine();
 
@@ -129,8 +129,15 @@ namespace TakeHome.Source
                 }
             }
 
-            Console.WriteLine("Press any key to exit...");
+            Debug.Log("Press any key to exit...");
             Console.ReadKey();
         }
+    }
+
+    public static class Debug
+    {
+        public static void Log<T>(T message) { Console.WriteLine(message);}
+        public static void LogWarning<T>(T message) { Console.WriteLine($"@->{message}");}
+
     }
 }
