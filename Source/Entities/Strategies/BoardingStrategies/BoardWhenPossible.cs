@@ -1,6 +1,5 @@
-﻿using TakeHome.Source.Entities;
-
-namespace TakeHome.Source.BoardingStrategies
+﻿
+namespace TakeHome.Source.Entities.Strategies.BoardingStrategies
 {
     public class BoardWhenPossible : BoardingStrategy
     {
@@ -8,7 +7,7 @@ namespace TakeHome.Source.BoardingStrategies
 
         public override void Board(Train train)
         {
-            train.BoardCustomer(Customer);
+            train.Board(Passenger);
         }
     }
 

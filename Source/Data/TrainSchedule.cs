@@ -2,17 +2,17 @@
 {
     public struct TrainSchedule
     {
-        public int numberofStations;
-        public int stationDistance;
-        public int departFrequency;
-        public int capacity;
+        public int NumberofStations { get; set; }
+        public int StationDistance { get; set; }
+        public int DepartFrequency { get; set; }
+        public int Capacity { get; set; }
 
         public override string ToString()
         {
-            return $"Number of Stations: {numberofStations}\n" +
-                $"Station Distance: {stationDistance}\n" +
-                $"Depart Frequency: {departFrequency}\n" +
-                $"Capacity: {capacity}\n";
+            return $"Number of Stations: {NumberofStations}\n" +
+                $"Station Distance: {StationDistance}\n" +
+                $"Depart Frequency: {DepartFrequency}\n" +
+                $"Capacity: {Capacity}\n";
         }
     }
 

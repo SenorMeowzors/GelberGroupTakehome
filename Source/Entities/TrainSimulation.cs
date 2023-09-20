@@ -1,49 +1,59 @@
 ﻿using System.Linq;
 using TakeHome.Source.Data;
+using TakeHome.Source.Helper;
 
 namespace TakeHome.Source.Entities
 {
     public class TrainSimulation
     {
-        List<Customer> _customers;
-        public TrainSchedule trainSchedule;
+        List<Passenger> _customers;
+        List<Train> _trains;
+        List<Train> _trainsToRemove;
 
-        List<Train> _trains = new List<Train>();
-        List<Train> _trainsToRemove = new List<Train>();
-
-        public LinkedList<Station> stations = new LinkedList<Station>();
-
-        public int time = 0;
         int _numTrains = 0;
         int _totalArrivals;
 
-        public void OnCustomerArrived(Customer customer)
+        public int Time { get; set; }
+        public TrainSchedule TrainSchedule { get; set; }
+        public LinkedList<Station> Stations { get; set; }
+
+        public void OnCustomerArrived(Passenger customer)
         {
             _totalArrivals++;
         }
 
-        public TrainSimulation(List<Customer> customersList, TrainSchedule schedule)
+        public TrainSimulation(List<Passenger> customersList, TrainSchedule schedule)
         {
-            _customers = customersList;
-            trainSchedule = schedule;
+            Stations = new LinkedList<Station>();
+            TrainSchedule = schedule;
 
+            _customers = customersList;
+            _trains = new List<Train>();
+            _trainsToRemove = new List<Train>();
+
+            CreateStations();
+        }
+
+        private void CreateStations()
+        {
             int stationNum = 1;
             Station headStation = new Station(stationNum);
-            LinkedListNode<Station> firstStation = stations.AddFirst(headStation);
+            LinkedListNode<Station> firstStation = Stations.AddFirst(headStation);
 
             LinkedListNode<Station> lastestNode = firstStation;
-            for (int i = stationNum; i < trainSchedule.numberofStations; i++)
+            for (int i = stationNum; i < TrainSchedule.NumberofStations; i++)
             {
                 stationNum++;
                 Station station = new Station(stationNum);
 
-                lastestNode = stations.AddAfter(lastestNode, station);
+                lastestNode = Stations.AddAfter(lastestNode, station);
             }
         }
 
         public bool Tick()
         {
-            Debug.Log($"##############  t={time}  ##############");
+            Debug.LogBlank();
+            Debug.LogHeader($"t={Time}");
 
             SpawnCustomers();
             SpawnTrains();
@@ -52,14 +62,14 @@ namespace TakeHome.Source.Entities
 
             if (_totalArrivals == _customers.Count)
             {
-                Debug.Log($"All customers arrived. Finished in t = {time} minutes");
-                Debug.Log("");
+                Debug.Log($"All customers arrived. Finished in t = {Time} minutes");
+                Debug.LogBlank();
                 return true;
             }
 
             RemoveTrains();
 
-            time++;
+            Time++;
             return false;
         }
 
@@ -75,15 +85,15 @@ namespace TakeHome.Source.Entities
         {
             for (int i = 0; i < _customers.Count; i++)
             {
-                Customer c = _customers[i];
-                if (c.timeArrived == time)
+                Passenger c = _customers[i];
+                if (c.TimeArrived == Time)
                 {
-                    var node = stations.First(x => x.stationNumber == c.startingStation);
+                    var node = Stations.First(x => x.StationNumber == c.StartingStation);
 
 
-                    node.customers.Add(c);
+                    node.Customers.Add(c);
 
-                    Debug.Log($"Customer {c.customerID} arrives at {node.stationNumber}. They want to goto {c.destinationStation}");
+                    Debug.Log($"Customer {c.ID} arrives at {node.StationNumber}. They want to goto {c.DestinationStation}");
                 }
             }
         }
@@ -93,20 +103,20 @@ namespace TakeHome.Source.Entities
             for (int i = 0; i < _trains.Count; i++)
             {
                 var t = _trains[i];
-                if(t != null)
+                if (t != null)
                 {
                     t.Tick(_customers);
-
                 }
             }
         }
 
         private void SpawnTrains()
         {
-            if (time % trainSchedule.departFrequency != 0)
+            if (Time % TrainSchedule.DepartFrequency != 0)
             {
                 return;
             }
+
             Train forwardTrain = new Train(this, true, ++_numTrains);
             Train backwardsTrain = new Train(this, false, ++_numTrains);
 

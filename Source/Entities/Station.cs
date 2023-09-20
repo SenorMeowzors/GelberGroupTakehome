@@ -2,19 +2,20 @@
 {
     public class Station
     {
-        public List<Customer> customers = new List<Customer>();
+        public List<Passenger> Customers { get; private set; }
 
-        public int stationNumber;
+        public int StationNumber { get; private set; }
 
         public Station(int stationNumber)
         {
-            this.stationNumber = stationNumber;
+            Customers = new List<Passenger>();
+            StationNumber = stationNumber;
         }
 
-        public void MoveCustomers(Train t)
+        public void MovePassengers(Train t)
         {
-            t.OffloadCustomers();
-            t.OnBoardCustomers(customers);
+            t.DisembarkPassengers();
+            t.EmbarkPassengers(Customers);
         }
 
     }

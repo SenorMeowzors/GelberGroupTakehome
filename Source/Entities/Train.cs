@@ -1,131 +1,100 @@
-﻿namespace TakeHome.Source.Entities
+﻿using TakeHome.Source.Helper;
+
+namespace TakeHome.Source.Entities
 {
     public class Train
     {
-        public LinkedListNode<Station> currentStation;
-        public List<Customer> currentCustomers = new List<Customer>();
-        public bool _forward;
-        public int capacity;
-        public int departFrequency;
-        public int trainID;
+        public LinkedListNode<Station> CurrentStation { get; private set; }
+        public List<Passenger> CurrentPassengers { get; private set; }
 
-        public int distanceToNextStation;
+        public bool Forward { get; private set; }
+        public int Capacity { get; private set; }
+        public int DepartFrequency { get; private set; }
+        public int ID { get; private set; }
+
+        int _distanceToNextStation;
+
+        TrainSimulation trainSimulation;
+
         public string TrainName
         {
             get
             {
-                if (_forward)
+                if (Forward)
                 {
-                    return $"Forward Train {trainID}";
+                    return $"Forward Train {ID}";
                 }
-                return $"Backwards Train {trainID}";
+                return $"Backwards Train {ID}";
             }
         }
-        public bool Finished
-        {
-            get
-            {
-                if (_forward)
-                {
-                    return currentStation.Value.stationNumber == trainSimulation.trainSchedule.numberofStations;
-                }
-
-                return currentStation.Value.stationNumber == 0;
-            }
-        }
-        TrainSimulation trainSimulation;
 
         public Train(TrainSimulation simulation, bool forward, int trainID)
         {
-            _forward = forward;
-            this.trainID = trainID;
-            if (_forward)
+            CurrentPassengers = new List<Passenger>();
+
+            Forward = forward;
+            ID = trainID;
+            if (Forward)
             {
-                currentStation = simulation.stations.First;
+                CurrentStation = simulation.Stations.First;
             }
             else
             {
-                currentStation = simulation.stations.Last;
+                CurrentStation = simulation.Stations.Last;
             }
 
             trainSimulation = simulation;
-            capacity = simulation.trainSchedule.capacity;
-            departFrequency = simulation.trainSchedule.departFrequency;
-            distanceToNextStation = simulation.trainSchedule.stationDistance;
-            Debug.Log($"{TrainName} Spawns at {currentStation.Value.stationNumber}");
-
-        }
-        public void Tick(List<Customer> customers)
-        {
-            if(trainID == 5)
-            {
-                int test = 32;
-            }
-            if (distanceToNextStation == trainSimulation.trainSchedule.stationDistance)
-            {
-                currentStation.Value.MoveCustomers(this);
-            }
-
-            distanceToNextStation--;
-            if (distanceToNextStation > 0)
-            {
-                Debug.LogWarning($"{TrainName} has {distanceToNextStation} left to goto next station");
-                return;
-            }
-
-            if (_forward)
-            {
-                currentStation = currentStation.Next;
-            }
-            else
-            {
-                currentStation = currentStation.Previous;
-            }
-
-            if (currentStation == null)
-            {
-                trainSimulation.QueueTrainRemoval(this);
-                return;
-            }
-
-            distanceToNextStation = trainSimulation.trainSchedule.stationDistance;
-            Debug.Log($"{TrainName} just moved to {currentStation.Value.stationNumber}");
+            Capacity = simulation.TrainSchedule.Capacity;
+            DepartFrequency = simulation.TrainSchedule.DepartFrequency;
+            _distanceToNextStation = simulation.TrainSchedule.StationDistance;
+            Debug.Log($"{TrainName} Spawns at {CurrentStation.Value.StationNumber}");
 
         }
 
-        public bool IsGoingTowardsDestination(Customer customer)
+        public void Tick(List<Passenger> customers)
         {
+            if (_distanceToNextStation == trainSimulation.TrainSchedule.StationDistance)
+            {
+                CurrentStation.Value.MovePassengers(this);
+            }
 
-            int destination = customer.destinationStation;
+            _distanceToNextStation--;
+            if (_distanceToNextStation > 0)
+            {
+                Debug.LogWarning($"{TrainName} has {_distanceToNextStation} left to goto next station");
+                return;
+            }
 
-            if (currentStation.Value.stationNumber == destination)
+            AdvanceTrain();
+        }
+
+        public bool IsGoingTowardsDestination(Passenger customer)
+        {
+            int destination = customer.DestinationStation;
+
+            if (CurrentStation.Value.StationNumber == destination)
             {
                 //do not board
                 return false;
             }
 
-            if (_forward)
+            if (Forward)
             {
-                return currentStation.Value.stationNumber < destination;
+                return CurrentStation.Value.StationNumber < destination;
             }
             else
             {
-                return currentStation.Value.stationNumber > destination;
+                return CurrentStation.Value.StationNumber > destination;
             }
         }
 
-        public void OnBoardCustomers(List<Customer> customers)
+        public void EmbarkPassengers(List<Passenger> passengers)
         {
-            if (trainID == 4)
-            {
-                int e = 0;
-                e++;
-            }
+            passengers = PrioritizeByStrategyAndDistance(passengers);
 
-            customers = customers.OrderByDescending(c => c.boardingStrategy.Priority).ThenByDescending(c => Math.Abs(currentStation.Value.stationNumber - c.destinationStation)).ToList();
-            for (int i = 0; i < customers.Count; i++)
+            for (int i = 0; i < passengers.Count; i++)
             {
-                Customer c = customers[i];
+                Passenger c = passengers[i];
 
                 if (IsGoingTowardsDestination(c))
                 {
@@ -134,32 +103,69 @@
             }
         }
 
-        public void OffloadCustomers()
+        public void DisembarkPassengers()
         {
-            for (int i = 0; i < currentCustomers.Count; i++)
+            for (int i = 0; i < CurrentPassengers.Count; i++)
             {
-                Customer c = currentCustomers[i];
-                if (c.destinationStation == currentStation.Value.stationNumber)
+                Passenger c = CurrentPassengers[i];
+                if (c.DestinationStation == CurrentStation.Value.StationNumber)
                 {
-                    currentCustomers.RemoveAt(i);
-                    currentStation.Value.customers.Add(c);
-                    Debug.Log($"Train {TrainName} arrives at {currentStation.Value.stationNumber} Passenger #{c.customerID} departs this train.");
+                    CurrentPassengers.RemoveAt(i);
+                    CurrentStation.Value.Customers.Add(c);
+
+                    Debug.Log($"Train {TrainName} arrives at {CurrentStation.Value.StationNumber} Passenger #{c.ID} departs this train.");
 
                     trainSimulation.OnCustomerArrived(c);
                 }
             }
         }
 
-        public void BoardCustomer(Customer customer)
+        public void Board(Passenger customer)
         {
-            if (currentCustomers.Count >= capacity)
+            if (CurrentPassengers.Count >= Capacity)
             {
                 return;
             }
-            Debug.Log($"Train {TrainName} arrives at station {currentStation.Value.stationNumber} Passenger #{customer.customerID} boards this train.");
 
-            currentStation.Value.customers.Remove(customer);
-            currentCustomers.Add(customer);
+            Debug.Log($"Train {TrainName} arrives at station {CurrentStation.Value.StationNumber} Passenger #{customer.ID} boards this train.");
+
+            CurrentStation.Value.Customers.Remove(customer);
+            CurrentPassengers.Add(customer);
         }
+
+        private void AdvanceTrain()
+        {
+            if (Forward)
+            {
+                CurrentStation = CurrentStation.Next;
+            }
+            else
+            {
+                CurrentStation = CurrentStation.Previous;
+            }
+
+            if (CurrentStation == null)
+            {
+                trainSimulation.QueueTrainRemoval(this);
+                return;
+            }
+
+            _distanceToNextStation = trainSimulation.TrainSchedule.StationDistance;
+            Debug.Log($"{TrainName} just moved to {CurrentStation.Value.StationNumber}");
+        }
+
+        private List<Passenger> PrioritizeByStrategyAndDistance(List<Passenger> passengers)
+        {
+
+            return passengers.OrderByDescending(c => c.BoardingStrategy.Priority)
+                                   .ThenByDescending(GetDistanceToDestination)
+                                   .ToList();
+        }
+
+        private int GetDistanceToDestination(Passenger c)
+        {
+            return Math.Abs(CurrentStation.Value.StationNumber - c.DestinationStation);
+        }
+
     }
 }
