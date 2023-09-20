@@ -8,7 +8,7 @@ namespace TakeHome.Source
 {
     public static class Parser
     {
-        public static PassengerType ParseCustomer(char type)
+        public static PassengerType ParsePassenger(char type)
         {
             switch (type)
             {
@@ -27,17 +27,17 @@ namespace TakeHome.Source
             {
                 string trainHeader = reader.ReadLine();
                 TrainSchedule trainSchedule = ParseTrainSchedule(trainHeader);
-                List<Passenger> initialPassengers = PopulateCustomers(reader);
+                List<Passenger> initialPassengers = PopulatePassengers(reader);
 
                 return new TrainSimulation(initialPassengers, trainSchedule);
             }
         }
 
-        private static List<Passenger> PopulateCustomers(StreamReader reader)
+        private static List<Passenger> PopulatePassengers(StreamReader reader)
         {
-            List<Passenger> customerList = new List<Passenger>();
+            List<Passenger> passengersList = new List<Passenger>();
 
-            int customerID = 1;
+            int passengerID = 1;
             string line;
             Debug.LogHeader($"Customers");
 
@@ -50,22 +50,22 @@ namespace TakeHome.Source
                     break;
                 }
 
-                Passenger customer = BuildCustomer(customerID, data);
+                Passenger passenger = BuildPassenger(passengerID, data);
 
-                customerList.Add(customer);
+                passengersList.Add(passenger);
 
-                customerID++;
-                Debug.Log($"{customer}");
+                passengerID++;
+                Debug.Log($"{passenger}");
             }
 
-            return customerList;
+            return passengersList;
         }
 
-        private static Passenger BuildCustomer(int customerID, string[] data)
+        private static Passenger BuildPassenger(int passengerID, string[] data)
         {
-            PassengerType customerType = ParseCustomer(Convert.ToChar(data[0]));
+            PassengerType type = ParsePassenger(Convert.ToChar(data[0]));
             BoardingStrategy strategy;
-            if (customerType == PassengerType.BoardAnyTrain)
+            if (type == PassengerType.BoardAnyTrain)
             {
                 strategy = new BoardWhenPossible();
             }
@@ -78,8 +78,7 @@ namespace TakeHome.Source
             var destinationStation = int.Parse(data[2]);
             var startingStation = int.Parse(data[3]);
 
-            Passenger customer = new Passenger(customerID, strategy, timeArrived, destinationStation, startingStation);
-            return customer;
+            return new Passenger(passengerID, strategy, timeArrived, destinationStation, startingStation);
         }
 
         private static TrainSchedule ParseTrainSchedule(string trainHeader)

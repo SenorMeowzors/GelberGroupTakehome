@@ -21,7 +21,7 @@ namespace TakeHome.Source
         {
             while (true)
             {
-                Debug.Log("Place a .txt file at .exe path and enter the file name and press enter. Leave blank to exit");
+                Debug.Log("Place a .txt file at .exe path and enter the file name and press enter. Leave blank to exit.");
 
                 string fileName = Console.ReadLine();
 

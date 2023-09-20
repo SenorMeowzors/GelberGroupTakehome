@@ -12,11 +12,11 @@ namespace TakeHome.Source.Entities.Strategies.BoardingStrategies
             var half = train.Capacity / 2.0f;
             if (train.CurrentPassengers.Count >= half)
             {
-                Debug.Log($"{Passenger.ID} refused to board the {train.TrainName}. Capacity was {train.CurrentPassengers.Count}/{train.Capacity}");
+                Debug.Log($"Passenger #{Passenger.ID} refused to board the {train.TrainName}. Capacity was {train.CurrentPassengers.Count}/{train.Capacity}.");
 
                 return;
             }
-            Debug.Log($"{Passenger.ID} boards the {train.TrainName}");
+            Debug.Log($"Passenger #{Passenger.ID} boards the {train.TrainName}.");
             train.Board(Passenger);
         }
     }

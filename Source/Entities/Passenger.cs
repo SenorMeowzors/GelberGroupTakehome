@@ -32,9 +32,9 @@ namespace TakeHome.Source.Entities
         public BoardingStrategy BoardingStrategy { get; private set; }
 
 
-        public Passenger(int customerID, BoardingStrategy strategy, int timeArrived, int destinationStation, int startingStation)
+        public Passenger(int id, BoardingStrategy strategy, int timeArrived, int destinationStation, int startingStation)
         {
-            ID = customerID;
+            ID = id;
             BoardingStrategy = strategy;
             TimeArrived = timeArrived;
             DestinationStation = destinationStation;
@@ -46,7 +46,7 @@ namespace TakeHome.Source.Entities
         {
             return
                 $"ID: {ID}\n" +
-                $"Customer Type: {Type}\n" +
+                $"Passenger Type: {Type}\n" +
                 $"Time Arrived: {TimeArrived}\n" +
                 $"Destination: {DestinationStation}\n" +
                 $"Starting Station: {StartingStation}\n";

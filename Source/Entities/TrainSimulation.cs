@@ -5,7 +5,7 @@ namespace TakeHome.Source.Entities
 {
     public class TrainSimulation
     {
-        List<Passenger> _customers;
+        List<Passenger> _passengers;
         List<Train> _trains;
         List<Train> _trainsToRemove;
 
@@ -16,17 +16,17 @@ namespace TakeHome.Source.Entities
         public TrainSchedule TrainSchedule { get; set; }
         public LinkedList<Station> Stations { get; set; }
 
-        public void OnCustomerArrived(Passenger customer)
+        public void OnPassengerArrived(Passenger passenger)
         {
             _totalArrivals++;
         }
 
-        public TrainSimulation(List<Passenger> customersList, TrainSchedule schedule)
+        public TrainSimulation(List<Passenger> passengers, TrainSchedule schedule)
         {
             Stations = new LinkedList<Station>();
             TrainSchedule = schedule;
 
-            _customers = customersList;
+            _passengers = passengers;
             _trains = new List<Train>();
             _trainsToRemove = new List<Train>();
 
@@ -54,14 +54,14 @@ namespace TakeHome.Source.Entities
             Debug.LogBlank();
             Debug.LogHeader($"t={Time}");
 
-            SpawnCustomers();
+            SpawnPassengers();
             SpawnTrains();
             MoveTrains();
 
 
-            if (_totalArrivals == _customers.Count)
+            if (_totalArrivals == _passengers.Count)
             {
-                Debug.Log($"All customers arrived. Finished in t = {Time} minutes");
+                Debug.Log($"All Passengers arrived. Finished in t = {Time} minutes.");
                 Debug.LogBlank();
                 return true;
             }
@@ -80,19 +80,19 @@ namespace TakeHome.Source.Entities
             }
         }
 
-        private void SpawnCustomers()
+        private void SpawnPassengers()
         {
-            for (int i = 0; i < _customers.Count; i++)
+            for (int i = 0; i < _passengers.Count; i++)
             {
-                Passenger c = _customers[i];
+                Passenger c = _passengers[i];
                 if (c.TimeArrived == Time)
                 {
                     var node = Stations.First(x => x.StationNumber == c.StartingStation);
 
 
-                    node.Customers.Add(c);
+                    node.Passengers.Add(c);
 
-                    Debug.Log($"Customer {c.ID} arrives at {node.StationNumber}. They want to goto {c.DestinationStation}");
+                    Debug.Log($"Passenger #{c.ID} arrives at {node.StationNumber}. They want to goto Station {c.DestinationStation}.");
                 }
             }
         }
@@ -104,7 +104,7 @@ namespace TakeHome.Source.Entities
                 var t = _trains[i];
                 if (t != null)
                 {
-                    t.Tick(_customers);
+                    t.Tick();
                 }
             }
         }
