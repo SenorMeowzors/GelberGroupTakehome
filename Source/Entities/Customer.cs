@@ -1,6 +1,7 @@
 ﻿using System.Reflection.Metadata.Ecma335;
+using TakeHome.Source.BoardingStrategies;
 
-namespace TakeHome.Source
+namespace TakeHome.Source.Entities
 {
     public class Customer
     {
@@ -14,7 +15,7 @@ namespace TakeHome.Source
         {
             get
             {
-                if(boardingStrategy is BoardWhenPossible)
+                if (boardingStrategy is BoardWhenPossible)
                 {
                     return CustomerType.BoardAnyTrain;
                 }
@@ -30,10 +31,10 @@ namespace TakeHome.Source
         public int customerID;
 
         public BoardingStrategy boardingStrategy;
-        
+
         public override string ToString()
         {
-            return 
+            return
                 $"ID: {customerID}\n" +
                 $"Customer Type: {customerType}\n" +
                 $"Time Arrived: {timeArrived}\n" +

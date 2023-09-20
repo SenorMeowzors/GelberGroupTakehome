@@ -1,4 +1,4 @@
-﻿namespace TakeHome.Source
+﻿namespace TakeHome.Source.Entities
 {
     public class Train
     {
@@ -14,7 +14,7 @@
         {
             get
             {
-                if(_forward)
+                if (_forward)
                 {
                     return $"Forward Train {trainID}";
                 }
@@ -25,7 +25,7 @@
         {
             get
             {
-                if(_forward)
+                if (_forward)
                 {
                     return currentStation.Value.stationNumber == trainSimulation.trainSchedule.numberofStations;
                 }
@@ -37,9 +37,9 @@
 
         public Train(TrainSimulation simulation, bool forward, int trainID)
         {
-            this._forward = forward;
+            _forward = forward;
             this.trainID = trainID;
-            if(_forward)
+            if (_forward)
             {
                 currentStation = simulation.stations.First;
             }
@@ -50,20 +50,20 @@
 
             trainSimulation = simulation;
             capacity = simulation.trainSchedule.capacity;
-            departFrequency  = simulation.trainSchedule.departFrequency;
+            departFrequency = simulation.trainSchedule.departFrequency;
             distanceToNextStation = simulation.trainSchedule.stationDistance;
             Debug.Log($"{TrainName} Spawns at {currentStation.Value.stationNumber}");
 
         }
         public void Tick(List<Customer> customers)
         {
-            if(distanceToNextStation == trainSimulation.trainSchedule.stationDistance)
+            if (distanceToNextStation == trainSimulation.trainSchedule.stationDistance)
             {
                 currentStation.Value.MoveCustomers(this);
             }
 
             distanceToNextStation--;
-            if(distanceToNextStation > 0)
+            if (distanceToNextStation > 0)
             {
                 Debug.LogWarning($"{TrainName} has {distanceToNextStation} left to goto next station");
                 return;
@@ -91,18 +91,18 @@
 
         public bool IsGoingTowardsDestination(Customer customer)
         {
-            
+
             int destination = customer.destinationStation;
-            
-            if(currentStation.Value.stationNumber == destination)
+
+            if (currentStation.Value.stationNumber == destination)
             {
                 //do not board
                 return false;
             }
-            
-            if(_forward)
-            { 
-                return currentStation.Value.stationNumber < destination;  
+
+            if (_forward)
+            {
+                return currentStation.Value.stationNumber < destination;
             }
             else
             {
@@ -112,13 +112,13 @@
 
         public void OnBoardCustomers(List<Customer> customers)
         {
-            if(trainID == 4)
+            if (trainID == 4)
             {
                 int e = 0;
                 e++;
             }
 
-            customers = customers.OrderByDescending(c => c.boardingStrategy.Priority).ThenByDescending(c => Math.Abs(currentStation.Value.stationNumber - c.destinationStation)).ToList();    
+            customers = customers.OrderByDescending(c => c.boardingStrategy.Priority).ThenByDescending(c => Math.Abs(currentStation.Value.stationNumber - c.destinationStation)).ToList();
             for (int i = 0; i < customers.Count; i++)
             {
                 Customer c = customers[i];
@@ -148,7 +148,7 @@
 
         public void BoardCustomer(Customer customer)
         {
-            if(currentCustomers.Count >= capacity)
+            if (currentCustomers.Count >= capacity)
             {
                 return;
             }

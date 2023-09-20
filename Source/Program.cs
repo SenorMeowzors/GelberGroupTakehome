@@ -1,4 +1,7 @@
-﻿using static TakeHome.Source.Customer;
+﻿using TakeHome.Source.BoardingStrategies;
+using TakeHome.Source.Data;
+using TakeHome.Source.Entities;
+using static TakeHome.Source.Entities.Customer;
 
 namespace TakeHome.Source
 {

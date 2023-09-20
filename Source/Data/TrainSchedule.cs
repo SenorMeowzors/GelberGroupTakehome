@@ -1,4 +1,4 @@
-﻿namespace TakeHome.Source
+﻿namespace TakeHome.Source.Data
 {
     public struct TrainSchedule
     {

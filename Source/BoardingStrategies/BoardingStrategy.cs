@@ -1,4 +1,6 @@
-﻿namespace TakeHome.Source
+﻿using TakeHome.Source.Entities;
+
+namespace TakeHome.Source.BoardingStrategies
 {
     public abstract class BoardingStrategy
     {

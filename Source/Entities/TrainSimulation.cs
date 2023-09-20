@@ -1,5 +1,7 @@
 ﻿using System.Linq;
-namespace TakeHome.Source
+using TakeHome.Source.Data;
+
+namespace TakeHome.Source.Entities
 {
     public class TrainSimulation
     {
@@ -61,7 +63,7 @@ namespace TakeHome.Source
                 {
                     var node = stations.First(x => x.stationNumber == c.startingStation);
 
-                    
+
                     node.customers.Add(c);
 
                     Debug.Log($"Customer {c.customerID} arrives at {node.stationNumber}. They want to goto {c.destinationStation}");
@@ -71,7 +73,7 @@ namespace TakeHome.Source
 
         void MoveTrains()
         {
-            for(int i = 0; i <  trains.Count; i++)
+            for (int i = 0; i < trains.Count; i++)
             {
                 var t = trains[i];
 
@@ -81,7 +83,7 @@ namespace TakeHome.Source
 
         private void SpawnTrains()
         {
-            if(time % trainSchedule.departFrequency != 0)
+            if (time % trainSchedule.departFrequency != 0)
             {
                 return;
             }
@@ -91,7 +93,7 @@ namespace TakeHome.Source
 
         public void RemoveTrain(Train train)
         {
-            if(trains.Contains(train))
+            if (trains.Contains(train))
             {
                 //Debug.Log($"{train.TrainName} despawned");
                 trains.Remove(train);

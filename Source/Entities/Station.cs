@@ -1,4 +1,4 @@
-﻿namespace TakeHome.Source
+﻿namespace TakeHome.Source.Entities
 {
     public class Station
     {
@@ -6,7 +6,7 @@
 
         public int stationNumber;
 
-        public Station(int  stationNumber)
+        public Station(int stationNumber)
         {
             this.stationNumber = stationNumber;
         }
