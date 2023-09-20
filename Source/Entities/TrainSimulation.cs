@@ -61,8 +61,15 @@ namespace TakeHome.Source.Entities
 
             if (_totalArrivals == _passengers.Count)
             {
-                Debug.Log($"All Passengers arrived. Finished in t = {Time} minutes.");
-                Debug.LogBlank();
+                if(Debug.Simple)
+                {
+                    Console.WriteLine(Time);
+                }
+                else
+                {
+                    Debug.Log($"All Passengers arrived. Finished in t = {Time} minutes.");
+                    Debug.LogBlank();
+                }
                 return true;
             }
 

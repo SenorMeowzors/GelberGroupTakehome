@@ -60,7 +60,7 @@ namespace TakeHome.Source.Entities
             _distanceToNextStation--;
             if (_distanceToNextStation > 0)
             {
-                Debug.LogWarning($"{TrainName} has {_distanceToNextStation} minutes left to goto next station.");
+                //Debug.LogWarning($"{TrainName} has {_distanceToNextStation} minutes left to goto next station.");
                 return;
             }
 

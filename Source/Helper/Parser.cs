@@ -35,7 +35,10 @@ namespace TakeHome.Source
                 }
                 catch (Exception ex)
                 {
-                    Debug.Log($"Failed to read file: {fileName}");
+                    Debug.LogHeader("Error", true);
+                    Debug.Log(ex.Message, true);
+                    Debug.Log($"Failed to read file: {fileName}", true);
+                    Debug.LogHeader("Error", true);
                     return null;
                 }
             }
@@ -91,11 +94,15 @@ namespace TakeHome.Source
 
         private static TrainSchedule ParseTrainSchedule(string trainHeader)
         {
+            if(trainHeader == null)
+            {
+                throw new ArgumentNullException(nameof(trainHeader));
+            }
             string[] trainData = trainHeader.Split(' ');
 
             if (trainData.Length != 4)
             {
-                Debug.Log("Train data length unexpected: " + trainData.Length);
+                Console.WriteLine("Train data length unexpected: " + trainData.Length);
             }
 
             TrainSchedule trainSchedule = new TrainSchedule

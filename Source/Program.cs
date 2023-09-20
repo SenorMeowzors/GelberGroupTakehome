@@ -10,7 +10,7 @@ namespace TakeHome.Source
             var path = fileName;
             if (!File.Exists(path))
             {
-                Debug.Log($"{path} does not exist!");
+                Debug.Log($"{path} does not exist!", true);
                 return null;
             }
 
@@ -18,23 +18,51 @@ namespace TakeHome.Source
 
         }
 
+
+
         static void Main(string[] args)
         {
+            bool stepped = false;
+            string fileName;
+
             while (true)
-            {
-                string fileName;
+            {          
+                List<string> filesToRun  = new List<string>();
 
                 if (args.Length > 0)
                 {
-                    foreach(string arg in args)
+                    foreach (string arg in args)
                     {
-                        Simulate(false, Path.GetRelativePath(Environment.CurrentDirectory, arg));
+                        if (arg == "-simple")
+                        {
+                            Debug.Simple = true;
+                            continue;
+                        }
+
+                        if(arg == "-steps")
+                        {
+                            stepped = true;
+                        }
+
+                        if (Path.Exists(arg))
+                        {
+                            filesToRun.Add(arg);
+                            continue;
+                        }
+                    }
+                }
+
+                if (filesToRun.Count > 0)
+                {
+                    foreach(string file in filesToRun)
+                    {
+                        Simulate(Path.GetRelativePath(Environment.CurrentDirectory, file), stepped);
                     }
 
                 }
                 else
                 {
-                    Debug.Log("Input the filepath of a file you wish to simulate and press enter. Type quit to exit.");
+                    Debug.Log("Input the filepath of a file (with extension) you wish to simulate and press enter. Type quit to exit.", true);
 
                     fileName = Console.ReadLine();
                     if (fileName == null || fileName.Length < 1)
@@ -47,7 +75,7 @@ namespace TakeHome.Source
                         break;
                     }
 
-                    Simulate(true, fileName);
+                    Simulate(fileName);
                 }
 
                 if(args.Length > 0)
@@ -56,12 +84,14 @@ namespace TakeHome.Source
                 }
             }
 
+            if(stepped)
+            {
                 Debug.Log("Press any key to continue...");
                 Console.ReadKey();
-
+            }
         }
 
-        private static void Simulate(bool steppedSimulation, string fileName)
+        private static void Simulate(string fileName, bool steppedSimulation = false)
         {
             Debug.LogBlank();
             Debug.LogHeader("Simulation Begin");
@@ -73,7 +103,7 @@ namespace TakeHome.Source
             {
                 while (!simulation.Tick())
                 {
-                    if (steppedSimulation)
+                    if (steppedSimulation && !Debug.Simple)
                     {
                         Console.ReadKey();
                     }
