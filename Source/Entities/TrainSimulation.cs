@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using TakeHome.Source.Data;
+﻿using TakeHome.Source.Data;
 using TakeHome.Source.Helper;
 
 namespace TakeHome.Source.Entities

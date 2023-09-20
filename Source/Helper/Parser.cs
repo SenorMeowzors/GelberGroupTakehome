@@ -64,7 +64,7 @@ namespace TakeHome.Source
         private static Passenger BuildCustomer(int customerID, string[] data)
         {
             PassengerType customerType = ParseCustomer(Convert.ToChar(data[0]));
-            BoardingStrategy strategy = null;
+            BoardingStrategy strategy;
             if (customerType == PassengerType.BoardAnyTrain)
             {
                 strategy = new BoardWhenPossible();

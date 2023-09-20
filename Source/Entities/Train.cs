@@ -48,7 +48,6 @@ namespace TakeHome.Source.Entities
             DepartFrequency = simulation.TrainSchedule.DepartFrequency;
             _distanceToNextStation = simulation.TrainSchedule.StationDistance;
             Debug.Log($"{TrainName} Spawns at {CurrentStation.Value.StationNumber}");
-
         }
 
         public void Tick(List<Passenger> customers)
@@ -74,7 +73,6 @@ namespace TakeHome.Source.Entities
 
             if (CurrentStation.Value.StationNumber == destination)
             {
-                //do not board
                 return false;
             }
 
@@ -113,7 +111,7 @@ namespace TakeHome.Source.Entities
                     CurrentPassengers.RemoveAt(i);
                     CurrentStation.Value.Customers.Add(c);
 
-                    Debug.Log($"Train {TrainName} arrives at {CurrentStation.Value.StationNumber} Passenger #{c.ID} departs this train.");
+                    Debug.Log($"{TrainName} arrives at {CurrentStation.Value.StationNumber} Passenger #{c.ID} departs this train.");
 
                     trainSimulation.OnCustomerArrived(c);
                 }
@@ -127,7 +125,7 @@ namespace TakeHome.Source.Entities
                 return;
             }
 
-            Debug.Log($"Train {TrainName} arrives at station {CurrentStation.Value.StationNumber} Passenger #{customer.ID} boards this train.");
+            Debug.Log($"{TrainName} arrives at station {CurrentStation.Value.StationNumber} Passenger #{customer.ID} boards this train.");
 
             CurrentStation.Value.Customers.Remove(customer);
             CurrentPassengers.Add(customer);
